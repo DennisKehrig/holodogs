@@ -30,11 +30,12 @@ public class ProjectileLauncher : MonoBehaviour
     /// </summary>
     void OnSelect()
     {
-        if (Time.realtimeSinceStartup - LastShotTime > 1)
-        {
-            LastShotTime = Time.realtimeSinceStartup;
-            SpawnProjectile(0);
-        }
+        //Debug.Log("ProjectileLauncher.OnSelect");
+        //if (Time.realtimeSinceStartup - LastShotTime > 1)
+        //{
+        //    LastShotTime = Time.realtimeSinceStartup;
+        //    SpawnProjectile(0);
+        //}
     }
 
     /// <summary>

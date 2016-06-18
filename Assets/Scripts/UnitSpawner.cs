@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
-using HoloToolkit.Sharing;
+using HoloToolkit.Unity;
 
 public class UnitSpawner : MonoBehaviour
 {
-
-	// Use this for initialization
-	void Start () {
-	
+    public GameObject Agent;
+    
+    // Use this for initialization
+    void Start () {
 	}
 	
 	// Update is called once per frame
@@ -16,6 +16,9 @@ public class UnitSpawner : MonoBehaviour
 
     void OnSelect()
     {
-        Debug.Log("Would spawn");
+        GameObject agent = (GameObject)Instantiate(Agent);
+        RaycastHit hitInfo = GazeManager.Instance.HitInfo;
+        agent.transform.position = hitInfo.point;
+        agent.SetActive(true);
     }
 }

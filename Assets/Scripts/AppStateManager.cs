@@ -31,9 +31,15 @@ public class AppStateManager : Singleton<AppStateManager>
     void Start()
     {
         // The shootHandler shoots projectiles.
-        if (GetComponent<ProjectileLauncher>() != null)
+        //if (GetComponent<ProjectileLauncher>() != null)
+        //{
+        //    shootHandler = GetComponent<ProjectileLauncher>().gameObject;
+        //}
+        
+        // The shootHandler shoots projectiles.
+        if (GetComponent<UnitSpawner>() != null)
         {
-            shootHandler = GetComponent<ProjectileLauncher>().gameObject;
+            shootHandler = GetComponent<UnitSpawner>().gameObject;
         }
 
         // [Demo]

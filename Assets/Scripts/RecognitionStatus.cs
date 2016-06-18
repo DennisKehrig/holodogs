@@ -15,6 +15,6 @@ public class RecognitionStatus : Singleton<RecognitionStatus>
     // Update is called once per frame
     void Update () {
         RaycastHit hitInfo = GazeManager.Instance.HitInfo;
-        content.text = hitInfo.point.x + ", " + hitInfo.point.y + ", " + hitInfo.point.z;
+        content.text = hitInfo.point.x + " | " + hitInfo.point.y + " | " + hitInfo.point.z;
     }
 }
