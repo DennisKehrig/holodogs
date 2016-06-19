@@ -97,7 +97,7 @@ public class AppStateManager : Singleton<AppStateManager>
                 {
                     CurrentAppState = AppState.WaitingForStageTransform;
                     updateStatusText();
-                    GestureManager.Instance.OverrideFocusedObject = HologramPlacement.Instance.gameObject;
+                    GestureManager.Instance.GestureHandler = HologramPlacement.Instance.gameObject;
 
                     SpatialMappingManager.Instance.gameObject.SetActive(true);
                     SpatialMappingManager.Instance.DrawVisualMeshes = true;
@@ -111,7 +111,8 @@ public class AppStateManager : Singleton<AppStateManager>
                 {
                     CurrentAppState = AppState.Ready;
                     updateStatusText();
-                    GestureManager.Instance.OverrideFocusedObject = shootHandler;
+
+                    GestureManager.Instance.GestureHandler = shootHandler;
                 }
                 break;
         }

@@ -17,7 +17,7 @@ namespace HoloToolkit.Unity
         /// set the override focused object.
         /// If its null, then the gazed at object will be selected.
         /// </summary>
-        public GameObject OverrideFocusedObject
+        public GameObject GestureHandler
         {
             get; set;
         }
@@ -29,9 +29,13 @@ namespace HoloToolkit.Unity
         {
             // Create a new GestureRecognizer. Sign up for tapped events.
             gestureRecognizer = new GestureRecognizer();
-            gestureRecognizer.SetRecognizableGestures(GestureSettings.Tap);
+            gestureRecognizer.SetRecognizableGestures(GestureSettings.Tap | GestureSettings.ManipulationTranslate);
 
             gestureRecognizer.TappedEvent += GestureRecognizer_TappedEvent;
+            gestureRecognizer.ManipulationStartedEvent += GestureRecognizer_ManipulationStartedEvent;
+            gestureRecognizer.ManipulationCompletedEvent += GestureRecognizer_ManipulationCompletedEvent;
+            gestureRecognizer.ManipulationCanceledEvent += GestureRecognizer_ManipulationCanceledEvent;
+            gestureRecognizer.ManipulationUpdatedEvent += GestureRecognizer_ManipulationUpdatedEvent;
 
             // Start looking for gestures.
             gestureRecognizer.StartCapturingGestures();
@@ -39,36 +43,61 @@ namespace HoloToolkit.Unity
 
         private void GestureRecognizer_TappedEvent(InteractionSourceKind source, int tapCount, Ray headRay)
         {
-            if (focusedObject != null)
-            {
-                focusedObject.SendMessage("OnSelect");
-            }
+            GameObject handler = GestureHandler != null ? GestureHandler : focusedObject;
+            if (handler != null)
+                handler.SendMessage("OnSelect");
+        }
+
+        public GameObject heldObject;
+        private GameObject heldObjectHandler;
+
+        private void GestureRecognizer_ManipulationStartedEvent(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+        {
+            heldObject = focusedObject;
+            heldObjectHandler = GestureHandler != null ? GestureHandler : heldObject;
+            if (heldObjectHandler != null)
+                heldObjectHandler.SendMessage("OnManipulationStarted", cumulativeDelta);
+        }
+
+        private void GestureRecognizer_ManipulationUpdatedEvent(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+        {
+            if (heldObjectHandler != null)
+                heldObjectHandler.SendMessage("OnManipulationUpdated", cumulativeDelta);
+        }
+
+        private void GestureRecognizer_ManipulationCompletedEvent(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+        {
+            if (heldObjectHandler != null)
+                heldObjectHandler.SendMessage("OnManipulationCompleted", cumulativeDelta);
+
+            heldObject = null;
+            heldObjectHandler = null;
+        }
+
+        private void GestureRecognizer_ManipulationCanceledEvent(InteractionSourceKind source, Vector3 cumulativeDelta, Ray headRay)
+        {
+            if (heldObjectHandler != null)
+                heldObjectHandler.SendMessage("OnManipulationCanceled", cumulativeDelta);
+
+            heldObject = null;
+            heldObjectHandler = null;
         }
 
         void LateUpdate()
         {
             GameObject oldFocusedObject = focusedObject;
-            
-            if (GazeManager.Instance.Hit && 
-                OverrideFocusedObject == null &&
-                GazeManager.Instance.HitInfo.collider != null)
-            {
-                // If gaze hits a hologram, set the focused object to that game object.
-                // Also if the caller has not decided to override the focused object.
+
+            if (GazeManager.Instance.Hit && GazeManager.Instance.HitInfo.collider != null)
                 focusedObject = GazeManager.Instance.HitInfo.collider.gameObject;
-            }
             else
-            {
-                // If our gaze doesn't hit a hologram, set the focused object to null or override focused object.
-                focusedObject = OverrideFocusedObject;
-            }
+                focusedObject = null;
 
             if (focusedObject != oldFocusedObject)
             {
                 // If the currently focused object doesn't match the old focused object, cancel the current gesture.
                 // Start looking for new gestures.  This is to prevent applying gestures from one hologram to another.
-                gestureRecognizer.CancelGestures();
-                gestureRecognizer.StartCapturingGestures();
+                //gestureRecognizer.CancelGestures();
+                //gestureRecognizer.StartCapturingGestures();
             }
         }
 
