@@ -22,36 +22,69 @@ public class UnitSpawner : MonoBehaviour
         agent.SetActive(true);
     }
 
-    Vector3 appliedDelta = Vector3.zero;
+    GameObject targetObject = null;
+    Vector3 initialPosition = Vector3.zero;
+    Vector3 combinedDelta = Vector3.zero;
 
     void OnManipulationStarted(Vector3 cumulativeDelta)
     {
-        Debug.Log("Started " + GestureManager.Instance.heldObject.name);
-        applyManipulation(cumulativeDelta);
+        targetObject = GestureManager.Instance.heldObject;
+        Debug.Log("Started " + targetObject.name);
+        while (targetObject != null && targetObject.GetComponent<Rigidbody>() == null)
+        {
+            targetObject = targetObject.transform.parent.gameObject;
+            if (targetObject != null)
+                Debug.Log("Trying " + targetObject.name + " instead");
+        }
+        if (targetObject == null)
+            return;
+
+        Rigidbody rigidbody = targetObject.GetComponent<Rigidbody>();
+        rigidbody.detectCollisions = false;
+        rigidbody.isKinematic = true;
+
+        initialPosition = targetObject.transform.position;
+        combinedDelta = cumulativeDelta;
+        applyManipulation();
     }
 
     void OnManipulationUpdated(Vector3 cumulativeDelta)
     {
-        //Debug.Log("Updated " + GestureManager.Instance.heldObject.name);
-        applyManipulation(cumulativeDelta);
+        if (targetObject == null)
+            return;
+        //Debug.Log("Updated " + targetObject.name);
+        combinedDelta = cumulativeDelta;
+        applyManipulation();
     }
 
     void OnManipulationCompleted(Vector3 cumulativeDelta)
     {
-        Debug.Log("Completed " + GestureManager.Instance.heldObject.name);
-        applyManipulation(cumulativeDelta);
+        if (targetObject == null)
+            return;
+        Debug.Log("Completed " + targetObject.name);
+        combinedDelta = cumulativeDelta;
+        applyManipulation();
+
+        Rigidbody rigidbody = targetObject.GetComponent<Rigidbody>();
+        rigidbody.detectCollisions = true;
+        rigidbody.isKinematic = false;
     }
 
     void OnManipulationCanceled(Vector3 cumulativeDelta)
     {
-        Debug.Log("Canceled " + GestureManager.Instance.heldObject.name);
-        //GestureManager.Instance.heldObject.transform.Translate(-appliedDelta);
+        if (targetObject == null)
+            return;
+        Debug.Log("Canceled " + targetObject.name);
+        targetObject.transform.position = initialPosition;
+
+        Rigidbody rigidbody = targetObject.GetComponent<Rigidbody>();
+        rigidbody.detectCollisions = true;
+        rigidbody.isKinematic = false;
     }
 
-    void applyManipulation(Vector3 cumulativeDelta)
+    void applyManipulation()
     {
-        Debug.Log("cumulative: " + cumulativeDelta);
-        Debug.Log("change:     " + (cumulativeDelta - appliedDelta));
-        //GestureManager.Instance.heldObject.transform.Translate(cumulativeDelta - appliedDelta);
+        Debug.Log("Combined delta: " + combinedDelta);
+        targetObject.transform.position = initialPosition + combinedDelta;
     }
 }
