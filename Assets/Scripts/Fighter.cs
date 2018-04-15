@@ -3,17 +3,18 @@ using System.Collections;
 
 public class Fighter : Destructable
 {
-    public float movespeed = 3f;
     private static Vector3 gravity = Physics.gravity;
+
+    public float movespeed = 3f;
+    public float weaponRange = 3f;
+    public float reloadTime = 0.1f;
+    public float damage = 20;
 
     public GameObject target;
 
     private CharacterController controller;
     private GameObject currentTarget;
     private float lastShotFired = 0f;
-    public float weaponRange = 3f;
-    private float reloadTime = 0.5f;
-    private float damage = 10;
 
     // Use this for initialization
     void Start()

@@ -4391,6 +4391,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1690447063}
+  - 114: {fileID: 1690447064}
+  - 143: {fileID: 1690447065}
   m_Layer: 0
   m_Name: FryArmy
   m_TagString: Untagged
@@ -4427,6 +4429,40 @@ Transform:
   m_Father: {fileID: 2040337697}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &1690447064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1690447062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3644a3211bec3314e972dcb7b50aab9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  movespeed: 3
+  weaponRange: 3
+  reloadTime: 0.1
+  damage: 20
+  target: {fileID: 0}
+--- !u!143 &1690447065
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1690447062}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 0.02
+  m_Radius: 0.05
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.02, z: 0}
 --- !u!1 &1702437318
 GameObject:
   m_ObjectHideFlags: 0
@@ -4618,7 +4654,7 @@ GameObject:
   - 114: {fileID: 1781701762}
   m_Layer: 0
   m_Name: BASE2
-  m_TagString: Untagged
+  m_TagString: Base
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
